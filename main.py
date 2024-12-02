@@ -6,7 +6,7 @@ import asyncio
 
 # Обработчик команды /start
 async def start(update: Update, context):
-    await update.message.reply_text("Привет! Отправь мне ссылку на видео с YouTube, и я скачаю аудио для тебя.")
+    await update.message.reply_text("Привет hello! Отправь мне ссылку на видео с YouTube, и я скачаю аудио для тебя.")
 
 # Обработчик сообщений
 async def handle_message(update: Update, context):
