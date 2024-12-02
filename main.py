@@ -23,7 +23,7 @@ async def handle_message(update: Update, context):
                 'preferredcodec': 'mp3',      # Формат конвертации
                 'preferredquality': '192',    # Качество конвертированного аудио
             }],
-            'ffmpeg_location': '/home/Sidorov/ffmpeg/ffmpeg-7.1.tar.xz',  # Путь к ffmpeg
+            'ffmpeg_location': '/usr/bin/ffmpeg',  # Путь к ffmpeg
             'noplaylist': True,  # Если ссылка на плейлист, скачиваем только один трек
         }
 
