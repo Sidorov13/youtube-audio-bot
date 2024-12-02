@@ -13,7 +13,7 @@ logging.basicConfig(
 # Команда /start
 async def start(update: Update, context):
     await update.message.reply_text(
-        "Привет! Отправь мне ссылку на видео с YouTube, и я скачаю аудио для тебя."
+        "hello! Отправь мне ссылку на видео с YouTube, и я скачаю аудио для тебя."
     )
 
 # Обработка сообщений
