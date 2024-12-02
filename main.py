@@ -34,7 +34,7 @@ async def handle_message(update: Update, context):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'ffmpeg_location': 'Sidorov13/youtube-audio-bot/blob/main/ffmpeg-7.1.tar.x',  # Путь к ffmpeg на сервере
+           'ffmpeg_location': '/home/Sidorov/ffmpeg/ffmpeg-7.1.tar.xz',  # Путь к ffmpeg на сервере
             'noplaylist': True,
         }
 
