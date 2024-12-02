@@ -1,19 +1,8 @@
-import os
-import asyncio
-import nest_asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
 import os
-
-
-# Применяем nest_asyncio для разрешения работы с асинхронными задачами
-nest_asyncio.apply()
-
-# Получаем токен из переменной окружения
-token = os.getenv("TELEGRAM_BOT_TOKEN")
-if token is None:
-    raise ValueError("TELEGRAM_BOT_TOKEN не найден. Убедитесь, что переменная окружения добавлена.")
+import asyncio
 
 # Обработчик команды /start
 async def start(update: Update, context):
@@ -25,39 +14,54 @@ async def handle_message(update: Update, context):
     await update.message.reply_text("Скачиваю аудио... Подождите.")
 
     try:
+        # Параметры для скачивания аудио
         ydl_opts = {
-            
-            'format': 'bestaudio/best',
-            'outtmpl': '%(title)s.%(ext)s',
+            'format': 'bestaudio/best',  # Лучшее доступное аудио
+            'outtmpl': '%(title)s.%(ext)s',  # Используем название видео как имя файла
             'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
+                'key': 'FFmpegExtractAudio',  # Постпроцессор для конвертации в mp3
+                'preferredcodec': 'mp3',      # Формат конвертации
+                'preferredquality': '192',    # Качество конвертированного аудио
             }],
-           'ffmpeg_location': '/home/Sidorov/ffmpeg/ffmpeg-7.1.tar.xz',  # Путь к ffmpeg на сервере
-            'noplaylist': True,
+            'ffmpeg_location': '/home/Sidorov/ffmpeg/ffmpeg-7.1.tar.xz',  # Путь к ffmpeg
+            'noplaylist': True,  # Если ссылка на плейлист, скачиваем только один трек
         }
 
+        # Скачиваем аудио с YouTube
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)
-            title = info_dict.get('title', 'downloaded_audio')
-            audio_filename = f"{title}.mp3"
+            title = info_dict.get('title', 'downloaded_audio')  # Получаем название видео для файла
+            audio_filename = f"{title}.mp3"  # Название файла с расширением mp3
 
+        # Отправляем пользователю скачанное аудио
+        await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
+
+        # Открываем и отправляем скачанный файл
         with open(audio_filename, "rb") as audio:
             await update.message.reply_audio(audio)
 
+        # Удаляем файл после отправки
         os.remove(audio_filename)
 
     except Exception as e:
+        print(f"Error occurred: {e}")
         await update.message.reply_text(f"Произошла ошибка: {e}")
 
-# Основная функция
+# Основная функция запуска бота
 async def main():
-    app = Application.builder().token(token).build()
+    # Получение токена из переменных окружения
+    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    if not TOKEN:
+        print("Ошибка: Токен Telegram не найден в переменных окружения!")
+        return
 
+    app = Application.builder().token(TOKEN).build()
+
+    # Регистрация обработчиков
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
+    # Запуск бота
     await app.run_polling()
 
 # Запуск бота
