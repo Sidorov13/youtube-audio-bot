@@ -5,6 +5,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
 import os
+import yt_dlp as youtube_dl
 
 # Применяем nest_asyncio для разрешения работы с асинхронными задачами
 nest_asyncio.apply()
@@ -25,6 +26,7 @@ async def handle_message(update: Update, context):
 
     try:
         ydl_opts = {
+            
             'format': 'bestaudio/best',
             'outtmpl': '%(title)s.%(ext)s',
             'postprocessors': [{
