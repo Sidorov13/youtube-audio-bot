@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
 import os
-import yt_dlp as youtube_dl
+
 
 # Применяем nest_asyncio для разрешения работы с асинхронными задачами
 nest_asyncio.apply()
@@ -34,7 +34,7 @@ async def handle_message(update: Update, context):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'ffmpeg_location': '/usr/bin/ffmpeg',  # Путь к ffmpeg на сервере
+            'ffmpeg_location': 'Sidorov13/youtube-audio-bot/blob/main/ffmpeg-7.1.tar.x',  # Путь к ffmpeg на сервере
             'noplaylist': True,
         }
 
