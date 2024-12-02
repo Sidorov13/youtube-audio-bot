@@ -1,7 +1,13 @@
 import os
 import asyncio
+import nest_asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+import yt_dlp as youtube_dl
+import os
+
+# Применяем nest_asyncio для разрешения работы с асинхронными задачами
+nest_asyncio.apply()
 
 # Получаем токен из переменной окружения
 token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -30,7 +36,7 @@ async def handle_message(update: Update, context):
             'noplaylist': True,
         }
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)
             title = info_dict.get('title', 'downloaded_audio')
             audio_filename = f"{title}.mp3"
