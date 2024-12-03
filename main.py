@@ -20,14 +20,18 @@ async def handle_message(update: Update, context):
 
     try:
         # Параметры для скачивания аудио
+        download_path = "./downloads"  # Указываем директорию для скачивания
+        if not os.path.exists(download_path):
+            os.makedirs(download_path)  # Создаем директорию, если ее нет
+
         ydl_opts = {
             'format': 'bestaudio/best',
-            'outtmpl': '%(title)s.%(ext)s',
+            'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),  # Скачиваем в нужную папку
             'restrictfilenames': True,  # Используем безопасные названия
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
-                'preferredquality': '128',
+                'preferredquality': '192',
             }],
             'ffmpeg_location': '/usr/bin/ffmpeg',
             'noplaylist': True,
@@ -45,15 +49,16 @@ async def handle_message(update: Update, context):
         await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
 
         # Проверяем, существует ли файл
-        if not os.path.exists(audio_filename):
-            raise FileNotFoundError(f"Файл {audio_filename} не найден.")
+        file_path = os.path.join(download_path, audio_filename)
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Файл {file_path} не найден.")
 
         # Отправляем аудио
-        with open(audio_filename, "rb") as audio:
+        with open(file_path, "rb") as audio:
             await update.message.reply_audio(audio)
 
         # Удаляем файл после отправки
-        os.remove(audio_filename)
+        os.remove(file_path)
 
     except Exception as e:
         print(f"Error occurred: {e}")
