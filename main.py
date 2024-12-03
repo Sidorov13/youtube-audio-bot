@@ -45,11 +45,14 @@ async def handle_message(update: Update, context):
             sanitized_title = re.sub(r'[<>:"/\\|?*]', '_', title)
             audio_filename = f"{sanitized_title}.mp3"
 
+        # Печатаем путь к файлу для отладки
+        file_path = os.path.join(download_path, audio_filename)
+        print(f"Файл скачан по пути: {file_path}")
+
         # Отправляем пользователю скачанное аудио
         await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
 
         # Проверяем, существует ли файл
-        file_path = os.path.join(download_path, audio_filename)
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"Файл {file_path} не найден.")
 
