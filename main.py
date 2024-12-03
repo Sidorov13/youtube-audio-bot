@@ -1,5 +1,5 @@
-import nest_asyncio
 import asyncio
+import nest_asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
@@ -65,4 +65,6 @@ async def main():
 
 # Запуск бота с использованием asyncio.run()
 if __name__ == '__main__':
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.create_task(main())
+    loop.run_forever()
