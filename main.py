@@ -39,7 +39,7 @@ async def handle_message(update: Update, context):
 
         # Отправляем пользователю скачанное аудио
         await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
-
+try:
         # Отправляем аудио
         with open(audio_filename, "rb") as audio:
             await update.message.reply_audio(audio)
