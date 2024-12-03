@@ -53,7 +53,7 @@ async def handle_message(update: Update, context):
 
 # Основная функция запуска бота
 async def main():
-    TOKEN = "Ваш_токен_бота"
+    TOKEN = "TELEGRAM_BOT_TOKEN"
     app = Application.builder().token(TOKEN).build()
 
     # Регистрация обработчиков
