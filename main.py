@@ -4,7 +4,6 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
 import os
-import re
 
 # Применяем nest_asyncio для корректной работы асинхронного кода в окружении
 nest_asyncio.apply()
@@ -20,14 +19,9 @@ async def handle_message(update: Update, context):
 
     try:
         # Параметры для скачивания аудио
-        download_path = "./downloads"  # Указываем директорию для скачивания
-        if not os.path.exists(download_path):
-            os.makedirs(download_path)  # Создаем директорию, если ее нет
-
         ydl_opts = {
             'format': 'bestaudio/best',
-            'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),  # Скачиваем в нужную папку
-            'restrictfilenames': True,  # Используем безопасные названия
+            'outtmpl': '%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -41,27 +35,17 @@ async def handle_message(update: Update, context):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)
             title = info_dict.get('title', 'downloaded_audio')
-            # Очистка имени файла от недопустимых символов
-            sanitized_title = re.sub(r'[<>:"/\\|?*]', '_', title)
-            audio_filename = f"{sanitized_title}.mp3"
-
-        # Печатаем путь к файлу для отладки
-        file_path = os.path.join(download_path, audio_filename)
-        print(f"Файл скачан по пути: {file_path}")
+            audio_filename = f"{title}.mp3"
 
         # Отправляем пользователю скачанное аудио
         await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
 
-        # Проверяем, существует ли файл
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Файл {file_path} не найден.")
-
         # Отправляем аудио
-        with open(file_path, "rb") as audio:
+        with open(audio_filename, "rb") as audio:
             await update.message.reply_audio(audio)
 
         # Удаляем файл после отправки
-        os.remove(file_path)
+        os.remove(audio_filename)
 
     except Exception as e:
         print(f"Error occurred: {e}")
