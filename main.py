@@ -27,7 +27,7 @@ async def handle_message(update: Update, context):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'ffmpeg_location': '/usr/bin/ffmpeg',  # Путь к ffmpeg
+            'ffmpeg_location': '/usr/bin/ffmpeg',
             'noplaylist': True,
         }
 
@@ -63,6 +63,6 @@ async def main():
     # Запуск бота
     await app.run_polling()
 
-# Запуск бота
+# Запуск бота с использованием asyncio.run()
 if __name__ == '__main__':
     asyncio.run(main())
