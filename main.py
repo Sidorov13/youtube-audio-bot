@@ -52,8 +52,15 @@ async def handle_message(update: Update, context):
         await update.message.reply_text(f"Произошла ошибка: {e}")
 
 # Основная функция запуска бота
+import os
+
+# Основная функция запуска бота
 async def main():
-    TOKEN = "TELEGRAM_BOT_TOKEN"
+    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Используем переменную окружения
+    if not TOKEN:
+        print("Ошибка: переменная окружения TELEGRAM_BOT_TOKEN не установлена.")
+        return
+
     app = Application.builder().token(TOKEN).build()
 
     # Регистрация обработчиков
@@ -62,6 +69,7 @@ async def main():
 
     # Запуск бота
     await app.run_polling()
+
 
 # Запуск бота с использованием asyncio.run()
 if __name__ == '__main__':
