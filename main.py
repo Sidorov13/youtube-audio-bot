@@ -25,7 +25,7 @@ async def handle_message(update: Update, context):
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
-                'preferredquality': '192',
+                'preferredquality': '128',
             }],
             'ffmpeg_location': '/usr/bin/ffmpeg',
             'noplaylist': True,
