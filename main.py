@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import yt_dlp as youtube_dl
 import os
+import re
 
 # Применяем nest_asyncio для корректной работы асинхронного кода в окружении
 nest_asyncio.apply()
@@ -22,6 +23,7 @@ async def handle_message(update: Update, context):
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': '%(title)s.%(ext)s',
+            'restrictfilenames': True,  # Используем безопасные названия
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -35,10 +37,16 @@ async def handle_message(update: Update, context):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)
             title = info_dict.get('title', 'downloaded_audio')
-            audio_filename = f"{title}.mp3"
+            # Очистка имени файла от недопустимых символов
+            sanitized_title = re.sub(r'[<>:"/\\|?*]', '_', title)
+            audio_filename = f"{sanitized_title}.mp3"
 
         # Отправляем пользователю скачанное аудио
         await update.message.reply_text(f"Аудио '{title}' скачано! Отправляю...")
+
+        # Проверяем, существует ли файл
+        if not os.path.exists(audio_filename):
+            raise FileNotFoundError(f"Файл {audio_filename} не найден.")
 
         # Отправляем аудио
         with open(audio_filename, "rb") as audio:
